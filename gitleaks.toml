@@ -1,0 +1,62 @@
+# This file has been auto-generated. Do not edit manually.
+# If you would like to contribute new rules, please use 
+# cmd/generate/config/main.go and follow the contributing guidelines
+# at https://github.com/zricethezav/gitleaks/blob/master/CONTRIBUTING.md
+
+# This is the default gitleaks configuration file.
+# Rules and allowlists are defined within this file.
+# Rules instruct gitleaks on what should be considered a secret.
+# Allowlists instruct gitleaks on what is allowed, i.e. not a secret.
+
+title = "gitleaks config"
+
+[allowlist]
+description = "global allow lists"
+paths = [
+    '''gitleaks.toml''',
+    '''(.*?)(jpg|gif|doc|docx|zip|xls|pdf|bin|svg|socket|vsidx|v2|suo|wsuo|.dll|pdb|exe)$''',
+    '''(go.mod|go.sum)$''',
+    '''gradle.lockfile''',
+    '''node_modules''',
+    '''package-lock.json''',
+    '''yarn.lock''',
+    '''pnpm-lock.yaml''',
+    '''Database.refactorlog''',
+    '''vendor''',
+]
+
+[[rules]]
+id = "pass"
+description = "Detected password, potentially exposing access to various services and sensitive operations."
+regex = '''(?i)(?P<key>(pass))(=|:|).{0,5}(?P<pass>[0-9a-zA-Z\-_=]{8,64})'''
+entropy = 3.5
+keywords = [
+    "key","passwd","password","pass","PASSWORD","PASS"
+]
+
+[[rules]]
+id = "authToken"
+description = "Detected authTocken, potentially exposing access to various services and sensitive operations."
+regex = '''(?i)(?P<key>(_authToken))(=|:).{0,5}(?P<_authToken>[0-9a-zA-Z\-_=]{8,64})'''
+entropy = 3.5
+keywords = [
+    "key","authToken","_authToken"
+]
+
+[[rules]]
+id = "ssh"
+description = "Detected ssh_key, potentially exposing access to various services and sensitive operations."
+regex = '''(?i)(?P<key>(ssh-rsa))(=|:|).{0,5}(?P<ssh>[0-9a-zA-Z\-_=]{8,100})'''
+entropy = 3.5
+keywords = [
+    "key","ssh-rsa","ssh"
+]
+
+[[rules]]
+id = "apikey"
+description = "Detected api, potentially exposing access to various services and sensitive operations."
+regex = '''(?i)(?P<key>(apikey))(=|:).{0,5}(?P<apikey>[0-9a-zA-Z\-_=]{8,64})'''
+entropy = 3.5
+keywords = [
+    "apikey","api_key"
+]
