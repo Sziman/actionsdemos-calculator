@@ -1,11 +1,39 @@
-FROM node:10
+# Use golang base image
+FROM golang:latest as builder
 
-WORKDIR /usr/src/app
+# Install git
+RUN apt-get update && apt-get install -y git
 
-COPY package*.json ./
+# Set the working directory
+WORKDIR /gitleaks
 
-RUN npm ci --only=production
-COPY . .
+# Clone gitleaks repository
+RUN git clone https://github.com/zricethezav/gitleaks.git .
 
-EXPOSE 3000
-CMD [ "npm", "start" ]
+# Build gitleaks
+RUN go build -o gitleaks .
+
+# Start a new stage to create a smaller image
+FROM debian:latest
+
+# Copy the built gitleaks binary from the builder stage
+COPY --from=builder /gitleaks/gitleaks /usr/local/bin/
+
+# Set the working directory for gitleaks
+WORKDIR /repo
+#WORKDIR /repo/actionsdemos-calculator
+
+#COPY gitleaks.toml /repo/actionsdemos-calculator/
+
+# Install git
+RUN apt-get update && apt-get install -y git
+RUN pwd && echo tst
+
+# Clone your repository (replace <repository_url> with your actual GitHub repository URL)
+ARG GITHUB_PAT
+#RUN git clone https://${GITHUB_PAT}@github.com/Sziman/actionsdemos-calculator.git
+
+
+# Execute gitleaks scan command
+CMD ["gitleaks", "detect", "--verbose", "--no-git", "-c", "/repo/actionsdemos-calculator/gitleaks.toml"]
+#CMD ["sleep", "300m"]
