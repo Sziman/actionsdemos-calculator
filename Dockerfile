@@ -30,8 +30,8 @@ RUN apt-get update && apt-get install -y git
 RUN pwd && echo tst
 
 # Clone your repository (replace <repository_url> with your actual GitHub repository URL)
-ARG GITHUB_PAT
-#RUN git clone https://${GITHUB_PAT}@github.com/Sziman/actionsdemos-calculator.git
+# ARG GITHUB_PAT
+# RUN git clone https://${GITHUB_PAT}@github.com/Sziman/actionsdemos-calculator.git
 
 
 # Execute gitleaks scan command
